@@ -13,7 +13,8 @@
 #include <sys/types.h>		/*  */
 #include <time.h>		/* struct timeval */
 #include <unistd.h>		/* read(), write(), pipe() */
-#include "mystring.h"
+#include "network.h"
+
 
 #undef BUFSIZ
 #define BUFSIZ 255 * 2
