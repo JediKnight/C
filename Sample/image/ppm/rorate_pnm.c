@@ -14,12 +14,7 @@ int flip()
 
 int main()
 {
-#ifndef _1ARRAY
   unsigned char image[IMG_Y][IMG_X][COLOR];
-#else
-  unsigned char imgae[IMG_Y * IMG_X * COLOR];
-#endif
-
   int x, y, mx;
   FILE *fp;
 
@@ -31,7 +26,6 @@ int main()
 
   for(y = 0; y < IMG_Y; y++)
     {
-#ifndef _1ARRAY
       for(x = 0, mx = IMG_X; x < IMG_X / 2; x++, mx--)
 	{
 	  char tmpR, tmpG, tmpB;
@@ -47,23 +41,6 @@ int main()
 	  image[y][mx][G] = tmpG;
 	  image[y][mx][B] = tmpB;
 	}
-#else
-      for(x = 0, mx = IMG_X; x < (IMG_X * COLOR) / 2; x++, mx--)
-	{
-	  char tmpR, tmpG, tmpB;
-	  tmpR = image[(y * IMG_X) + x + R];
-	  tmpG = image[(y * IMG_X) + x + G];
-	  tmpB = image[(y * IMG_X) + x + B];
-
-	  image[(y * IMG_X) + x + R] = image[(y * IMG_X) + mx + R];
-	  image[(y * IMG_X) + x + G] = image[(y * IMG_X) + mx + G];
-	  image[(y * IMG_X) + x + B] = image[(y * IMG_X) + mx + B];
-
-	  image[(y * IMG_X) + mx + R] = tmpR;
-	  image[(y * IMG_X) + mx + G] = tmpG;
-	  image[(y * IMG_X) + mc + B] = tmpB;
-	}
-#endif
     }
 
   if((fp = fopen("sample_rev.pnm", "wb")) == NULL)
