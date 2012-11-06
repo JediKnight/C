@@ -1,0 +1,2 @@
+# 自作ライブラリを使う場合は-Iでincludeと-Lでlibを指定する
+gcc -I$HOME/Develop.localized/C/include -L$HOME/Develop.localized/C/lib
