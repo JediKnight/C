@@ -3,8 +3,8 @@
 
 #include <math.h>
 
-#define torad(x) (M_PI * x / 180)
-#define todeg(x) (x * 180 / M_PI)
+#define toRadian(x) (M_PI * x / 180)
+#define toDegree(x) (x * 180 / M_PI)
 
 typedef struct {
   double x;

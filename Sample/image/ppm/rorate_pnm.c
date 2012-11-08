@@ -21,8 +21,8 @@ int main(int argc, char **argv)
   int x, y;
   FILE *fp;
 
-  printf("%d", argc);
-  if(argc < 1) exit;
+  if(argc < 2)
+    exit;
 
   memset(img, 0x01, sizeof(img));
   memset(new, 0x01, sizeof(new));
@@ -37,7 +37,7 @@ int main(int argc, char **argv)
     {
       for(x = 0; x < IMG_X; x++)
 	{
-	  position pos = { .x = (double)x, .y = (double)y, .cx = (double)(IMG_X / 2), .cy = (double)(IMG_Y / 2), .angle = (double)torad(atoi(argv[1])) };
+	  position pos = { .x = (double)x, .y = (double)y, .cx = (double)(IMG_X / 2), .cy = (double)(IMG_Y / 2), .angle = (double)toRadian(atoi(argv[1])) };
 	  rotate(&pos);
 	  if(pos.x > 0 && pos.y > 0)
 	    {

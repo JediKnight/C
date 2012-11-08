@@ -9,6 +9,7 @@ int rotate(position *pos)
   tmp_y = ((pos->x - pos->cx) * sin(pos->angle)) + ((pos->y - pos->cy) * cos(pos->angle)) + pos->cy;
   pos->x = tmp_x;
   pos->y = tmp_y;
+  sleep(1);
   return 0;
 }
 
