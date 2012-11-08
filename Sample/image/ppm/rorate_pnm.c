@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 	{
 	  position pos = { .x = (double)x, .y = (double)y, .cx = (double)(IMG_X / 2), .cy = (double)(IMG_Y / 2), .angle = (double)toRadian(atoi(argv[1])) };
 	  rotate(&pos);
-	  if(pos.x > 0 && pos.y > 0)
+	  if(pos.x > 0 && pos.y > 0 && pos.x < IMG_X && pos.y < IMG_Y)
 	    {
 	      new[(int)pos.y][(int)pos.x][R] = img[y][x][R];
 	      new[(int)pos.y][(int)pos.x][G] = img[y][x][G];
