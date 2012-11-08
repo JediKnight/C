@@ -1,6 +1,6 @@
 #include "sort.h"
 
-int BubSort(int *v, int n)
+int bubSort(int *v, int n)
 {
   int i, j, temp;
   
@@ -20,7 +20,7 @@ int BubSort(int *v, int n)
   return 0;
 }
 
-int QuickSort(int *v, int n)
+int quickSort(int *v, int n)
 {
   int i, j, min, max, piv = (int)(n / 2), temp;
 

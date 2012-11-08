@@ -1,5 +1,8 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <errno.h>
+#include "matrix.h"
 
 #define IMG_Y 640
 #define IMG_X 640
@@ -12,41 +15,43 @@ int flip()
   return 0;
 }
 
-int main()
+int main(int argc, char **argv)
 {
-  unsigned char image[IMG_Y][IMG_X][COLOR];
-  int x, y, mx;
+  unsigned char img[IMG_Y][IMG_X][COLOR], new[IMG_Y][IMG_X][COLOR];
+  int x, y;
   FILE *fp;
+
+  printf("%d", argc);
+  if(argc < 1) exit;
+
+  memset(img, 0x01, sizeof(img));
+  memset(new, 0x01, sizeof(new));
 
   if((fp = fopen("sample.pnm", "rb")) == NULL)
     { perror("fopen"); return -1; }
   fscanf(fp, "P6\n640 640\n255\n");
-  fread(image, sizeof(char), IMG_Y * IMG_X * COLOR, fp);
+  fread(img, sizeof(char), IMG_Y * IMG_X * COLOR, fp);
   fclose(fp);
 
   for(y = 0; y < IMG_Y; y++)
     {
-      for(x = 0, mx = IMG_X; x < IMG_X / 2; x++, mx--)
+      for(x = 0; x < IMG_X; x++)
 	{
-	  char tmpR, tmpG, tmpB;
-	  tmpR = image[y][x][R];
-	  tmpG = image[y][x][G];
-	  tmpB = image[y][x][B];
-
-	  image[y][x][R] = image[y][mx][R];
-	  image[y][x][G] = image[y][mx][G];
-	  image[y][x][B] = image[y][mx][B];
-
-	  image[y][mx][R] = tmpR;
-	  image[y][mx][G] = tmpG;
-	  image[y][mx][B] = tmpB;
+	  position pos = { .x = (double)x, .y = (double)y, .cx = (double)(IMG_X / 2), .cy = (double)(IMG_Y / 2), .angle = (double)torad(atoi(argv[1])) };
+	  rotate(&pos);
+	  if(pos.x > 0 && pos.y > 0)
+	    {
+	      new[(int)pos.y][(int)pos.x][R] = img[y][x][R];
+	      new[(int)pos.y][(int)pos.x][G] = img[y][x][G];
+	      new[(int)pos.y][(int)pos.x][B] = img[y][x][B];
+	    }
 	}
     }
 
   if((fp = fopen("sample_rev.pnm", "wb")) == NULL)
     { perror("fopen"); return -1; }
   fprintf(fp, "P6\n%d %d\n%d\n", IMG_X, IMG_Y, 0xff);
-  fwrite(image, sizeof(char), IMG_Y * IMG_X * COLOR, fp);
+  fwrite(new, sizeof(char), IMG_Y * IMG_X * COLOR, fp);
   fclose(fp);
   return 0;
 }
