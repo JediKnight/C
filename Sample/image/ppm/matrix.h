@@ -18,6 +18,7 @@ typedef struct {
   float angle;
 } CoordinateData;
 
+int returnsTheRotation(CoordinateData *, float *);
 int rotate(CoordinateData *, float *);
 
 #endif	/* _MATRIX_H */

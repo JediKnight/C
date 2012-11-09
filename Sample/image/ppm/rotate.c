@@ -21,7 +21,7 @@ int main(int argc, char **argv)
   CoordinateData cdata;
   unsigned char img[IMG_Y][IMG_X][COLOR], new[IMG_Y][IMG_X][COLOR];
   int x, y;
-  float xy[2];
+  float xy[2], rev_xy[2];
   FILE *fp;
 
   if(argc < 2)
@@ -36,8 +36,7 @@ int main(int argc, char **argv)
   cdata.cy = IMG_Y / 2.0f;
   cdata.mx = 0.0f;
   cdata.my = 0.0f;
-  cdata.angle = strtof(argv[1], argv);
-  printf("%f\n", strtof(argv[1], argv));
+  cdata.angle = (float)toRadian(atoi(argv[1]));
 
   memset(img, 0x01, sizeof(img));
   memset(new, 0x01, sizeof(new));
@@ -55,11 +54,12 @@ int main(int argc, char **argv)
 	{
 	  cdata.px = (float)x;
 	  rotate(&cdata, xy);
+	  returnsTheRotation(&cdata, xy);
 	  if(xy[X] >= 0 && xy[Y] >= 0 && xy[X] < IMG_X && xy[Y] < IMG_Y)
 	    {
-	      new[(int)xy[Y]][(int)xy[X]][R] = img[y][x][R];
-	      new[(int)xy[Y]][(int)xy[X]][G] = img[y][x][G];
-	      new[(int)xy[Y]][(int)xy[X]][B] = img[y][x][B];
+	      new[(int)xy[Y]][(int)xy[X]][R] = img[(int)rev_xy[Y]][(int)rev_xy[X]][R];
+	      new[(int)xy[Y]][(int)xy[X]][G] = img[(int)rev_xy[Y]][(int)rev_xy[X]][G];
+	      new[(int)xy[Y]][(int)xy[X]][B] = img[(int)rev_xy[Y]][(int)rev_xy[X]][B];
 	    }
 	}
     }
