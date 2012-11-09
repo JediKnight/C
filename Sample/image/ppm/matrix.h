@@ -6,14 +6,18 @@
 #define toRadian(x) (M_PI * x / 180)
 #define toDegree(x) (x * 180 / M_PI)
 
-typedef struct {
-  double x;
-  double y;
-  double cx;
-  double cy;
-  double angle;
-} position;
+enum { X = 0, Y };
 
-int rotate(position *);
+typedef struct {
+  float px;
+  float py;
+  float cx;
+  float cy;
+  float mx;
+  float my;
+  float angle;
+} CoordinateData;
+
+int rotate(CoordinateData *, float *);
 
 #endif	/* _MATRIX_H */

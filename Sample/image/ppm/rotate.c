@@ -9,6 +9,7 @@
 #define COLOR 3
 enum { R =0, G, B };
 #define pos(y, x) (y * IMG_X) + x
+#define en(pi) (pi % 360)
 
 int flip()
 {
@@ -17,12 +18,26 @@ int flip()
 
 int main(int argc, char **argv)
 {
+  CoordinateData cdata;
   unsigned char img[IMG_Y][IMG_X][COLOR], new[IMG_Y][IMG_X][COLOR];
   int x, y;
+  float xy[2];
   FILE *fp;
 
   if(argc < 2)
-    exit;
+    {
+      perror("no argument");
+      exit(EXIT_FAILURE);
+    }
+
+  cdata.px = 0.0f;
+  cdata.py = 0.0f;
+  cdata.cx = IMG_X / 2.0f;
+  cdata.cy = IMG_Y / 2.0f;
+  cdata.mx = 0.0f;
+  cdata.my = 0.0f;
+  cdata.angle = strtof(argv[1], argv);
+  printf("%f\n", strtof(argv[1], argv));
 
   memset(img, 0x01, sizeof(img));
   memset(new, 0x01, sizeof(new));
@@ -35,15 +50,16 @@ int main(int argc, char **argv)
 
   for(y = 0; y < IMG_Y; y++)
     {
+      cdata.py = (float)y;
       for(x = 0; x < IMG_X; x++)
 	{
-	  position pos = { .x = (double)x, .y = (double)y, .cx = (double)(IMG_X / 2), .cy = (double)(IMG_Y / 2), .angle = (double)toRadian(atoi(argv[1])) };
-	  rotate(&pos);
-	  if(pos.x > 0 && pos.y > 0 && pos.x < IMG_X && pos.y < IMG_Y)
+	  cdata.px = (float)x;
+	  rotate(&cdata, xy);
+	  if(xy[X] >= 0 && xy[Y] >= 0 && xy[X] < IMG_X && xy[Y] < IMG_Y)
 	    {
-	      new[(int)pos.y][(int)pos.x][R] = img[y][x][R];
-	      new[(int)pos.y][(int)pos.x][G] = img[y][x][G];
-	      new[(int)pos.y][(int)pos.x][B] = img[y][x][B];
+	      new[(int)xy[Y]][(int)xy[X]][R] = img[y][x][R];
+	      new[(int)xy[Y]][(int)xy[X]][G] = img[y][x][G];
+	      new[(int)xy[Y]][(int)xy[X]][B] = img[y][x][B];
 	    }
 	}
     }
