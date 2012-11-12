@@ -57,8 +57,9 @@ int main(int argc, char **argv)
   /* fread(img, sizeof(char), IMG_Y * IMG_X * COLOR, fp); */
   /* fclose(fp); */
 
-  iread(img, IMG_X * IMG_Y * COLOR);
-  
+  iread(&cdata, img, IMG_X * IMG_Y * COLOR);
+  printf("%f %f %d\n", cdata.width, cdata.height, cdata.color);
+
   for(y = 0; y < IMG_Y; y++)
     {
       cdata.py = (float)y;

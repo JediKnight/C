@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "image.h"
+#include "matrix.h"
 
 int clearImagefd(void *imgfd, size_t size)
 {
@@ -9,16 +10,17 @@ int clearImagefd(void *imgfd, size_t size)
   return 0;
 }
 
-int iread(void *imgfd, size_t size)
+int iread(CoordinateData *cdata, void *imgfd, size_t size)
 {
   FILE *fp;
+  int size_x, size_y, color;
   if((fp = fopen("sample.pnm", "rb")) == NULL)
     {
       perror("fopen");
       return -1;
     }
 
-  fscanf(fp, "P6\n640 640\n255\n");
+  fscanf(fp, "P6\n%f %f\n%d\n", &cdata->width, &cdata->height, &cdata->color);
   fread(imgfd, sizeof(char), size, fp);
   fclose(fp);
 

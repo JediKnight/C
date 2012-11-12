@@ -9,6 +9,9 @@
 enum { X = 0, Y, OX, OY };
 
 typedef struct {
+  float width;
+  float height;
+  int color;
   float px;
   float py;
   float cx;
