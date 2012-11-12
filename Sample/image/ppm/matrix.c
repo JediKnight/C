@@ -5,39 +5,33 @@
 
 int returnsTheRotation(CoordinateData *cdata, float *xy)
 {
-  /*
-   * |  cos(A) sin(A) 0 | |x|
-   * | -sin(A) cos(A) 0 | |y|
-   * |      0      0  1 | |1|
-   */
-  xy[X] = ((cdata->px - cdata->cx) * cos(-cdata->angle)) + ((cdata->py - cdata->cy) * sin(-cdata->angle)) + cdata->cx;
-  xy[Y] = -((cdata->px - cdata->cx) * sin(-cdata->angle)) + ((cdata->py - cdata->cy) * cos(-cdata->angle)) + cdata->cy;
+  xy[X] = ((cdata->px - cdata->cx) * cos(cdata->angle)) + ((cdata->py - cdata->cy) * sin(cdata->angle)) + cdata->cx;
+  xy[Y] = -((cdata->px - cdata->cx) * sin(cdata->angle)) + ((cdata->py - cdata->cy) * cos(cdata->angle)) + cdata->cy;
+  return 0;
+}
+
+int magick(CoordinateData *cdata, float *xy)
+{
   return 0;
 }
 
 int rotate(CoordinateData *cdata, float *xy)
 {
-  /*
-   * | cos(A) -sin(A) 0 | |x|
-   * | sin(A)  cos(A) 0 | |y|
-   * |     0       0  1 | |1|
-   */
-  xy[X] = ((cdata->px - cdata->cx) * cos(cdata->angle)) - ((cdata->py - cdata->cy) * sin(cdata->angle)) + cdata->cx;
-  xy[Y] = ((cdata->px - cdata->cx) * sin(cdata->angle)) + ((cdata->py - cdata->cy) * cos(cdata->angle)) + cdata->cy;
+  xy[X] = (cdata->px - cdata->cx) * cos(cdata->angle) - (cdata->py - cdata->cy) * sin(cdata->angle) + cdata->cx;
+  xy[Y] = (cdata->px - cdata->cx) * sin(cdata->angle) + (cdata->py - cdata->cy) * cos(cdata->angle) + cdata->cy;
   return 0;
 }
 
-int scale()
+int parallel(CoordinateData *cdata, float *xy)
 {
+  xy[X] = cdata->px + cdata->mx;
+  xy[Y] = cdata->py + cdata->my;
   return 0;
 }
 
-int parallel(CoordinateData *cdata)
+int scale(CoordinateData *cdata, float *xy)
 {
-  int tmp_x, tmp_y;
-  tmp_x = cdata->px + cdata->mx;
-  tmp_y = cdata->py + cdata->my;
-  cdata->px = tmp_x;
-  cdata->py = tmp_y;
+  xy[X] = (cdata->px - cdata->cx) * cdata->sx + cdata->cx;
+  xy[Y] = (cdata->py - cdata->cy) * cdata->sy + cdata->cy;
   return 0;
 }

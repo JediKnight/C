@@ -20,15 +20,47 @@ int main()
 
   fprintf(fp, "P6\n%d %d\n%d\n", IMG_X, IMG_Y, 0xff);
 
-  for(y = 0; y < IMG_Y; y++)
+  /* 右上 */
+  for(y = 0; y < IMG_Y / 2; y++)
     {
-      c = 0x01;
+      for(x = 0; x < IMG_X / 2; x++)
+	{
+	  image[y][x][R] = 0xff;
+	  image[y][x][G] = 0;
+	  image[y][x][B] = 0;
+	}
+    }
+
+  /* 右下 */
+  for(y = IMG_Y / 2; y < IMG_Y; y++)
+    {
       for(x = 0; x < IMG_X; x++)
 	{
-	  if(y == x)
-	    c = 0xff;
+	  image[y][x][R] = 0;
+	  image[y][x][G] = 0;
+	  image[y][x][B] = 0xff;
+	}
+    }
 
-	  image[y][x][R] = image[y][x][G] = image[y][x][B] = c;
+  for(y = 0; y < IMG_Y / 2; y++)
+    {
+      for(x = IMG_X / 2; x < IMG_X; x++)
+	{
+	  image[y][x][R] = 0xff;
+	  image[y][x][G] = 0xff;
+	  image[y][x][B] = 0xff;
+	}
+    }
+
+	  
+  /* 左下 */
+  for(y = IMG_Y / 2; y < IMG_Y; y++)
+    {
+      for(x = IMG_X / 2; x < IMG_X; x++)
+	{
+	  image[y][x][R] = 0;
+	  image[y][x][G] = 0xff;
+	  image[y][x][B] = 0;
 	}
     }
 
