@@ -20,8 +20,8 @@ typedef struct tagBITMAPCOREHEADER{
 
 typedef struct tagBITMAPINFOHEADER{
   unsigned long  biSize;
-  unsigned short biWidth;
-  unsigned short biHeight;
+  long           biWidth;
+  long           biHeight;
   unsigned short biPlanes;
   unsigned short biBitCount;
   unsigned long  biCompression;
@@ -31,6 +31,57 @@ typedef struct tagBITMAPINFOHEADER{
   unsigned long  biClrUsed;
   unsigned long  biClrImporant;
 } BITMAPINFOHEADER;
+
+typedef struct tagRGBTRIPLE{
+  unsigned char rgbBlue;
+  unsigned char rgbGreen;
+  unsigned char rgbRed;
+} RGBTRIPLE;
+
+enum {
+  BI_RGB = 0,
+  BI_RLE8,
+  BI_RLE4,
+  BI_BITFIELDS,
+  BI_JPEG,
+  BI_PNG
+};
+
+int fileHeader(BITMAPFILEHEADER *bfHeader, FILE *fp)
+{
+  fread(&bfHeader->bfType, 2, 1, fp);
+  fread(&bfHeader->bfSize, 4, 1, fp);
+  fread(&bfHeader->bfReserved1, 2, 1, fp);
+  fread(&bfHeader->bfReserved2, 2, 1, fp);
+  fread(&bfHeader->bfOffBits, 4, 1, fp);
+  return 0;
+}
+
+int coreHeader(BITMAPCOREHEADER *bcHeader, FILE *fp)
+{
+  fread(&bcHeader->bcSize, 4, 1, fp);
+  fread(&bcHeader->bcWidth, 2, 1, fp);
+  fread(&bcHeader->bcHeight, 2, 1, fp);
+  fread(&bcHeader->bcPlanes, 2, 1, fp);
+  fread(&bcHeader->bcBitCount, 2, 1, fp);
+  return 0;
+}
+
+int infoHeader(BITMAPINFOHEADER *biHeader, FILE *fp)
+{
+  fread(&biHeader->biSize, 4, 1, fp);
+  fread(&biHeader->biWidth, 4, 1, fp);
+  fread(&biHeader->biHeight, 4, 1, fp);
+  fread(&biHeader->biPlanes, 2, 1, fp);
+  fread(&biHeader->biBitCount, 2, 1, fp);
+  fread(&biHeader->biCompression, 4, 1, fp);
+  fread(&biHeader->biSizeImage, 4, 1, fp);
+  fread(&biHeader->biXPixPerMeter, 4, 1, fp);
+  fread(&biHeader->biYPixPerMeter, 4, 1, fp);
+  fread(&biHeader->biClrUsed, 4, 1, fp);
+  fread(&biHeader->biClrImporant, 4, 1, fp);
+  return 0;
+}
 
 int dispFileHeader(BITMAPFILEHEADER *bfHeader)
 {
@@ -106,6 +157,7 @@ int main(int argc, char **argv)
   BITMAPFILEHEADER bfHeader;
   BITMAPCOREHEADER bcHeader;
   BITMAPINFOHEADER biHeader;
+  RGBTRIPLE rgbTriple;
 
   if(argc != 2)
     {
@@ -119,32 +171,18 @@ int main(int argc, char **argv)
       exit(EXIT_FAILURE);
     }
 
-  fread(&bfHeader.bfType, 2, 1, fp);
-  fread(&bfHeader.bfSize, 4, 1, fp);
-  fread(&bfHeader.bfReserved1, 2, 1, fp);
-  fread(&bfHeader.bfReserved2, 2, 1, fp);
-  fread(&bfHeader.bfOffBits, 4, 1, fp);
+  fileHeader(&bfHeader, fp);
   dispFileHeader(&bfHeader);
 
-  /* fread(&bcHeader.bcSize, 4, 1, fp); */
-  /* fread(&bcHeader.bcWidth, 4, 1, fp); */
-  /* fread(&bcHeader.bcHeight, 4, 1, fp); */
-  /* fread(&bcHeader.bcPlanes, 2, 1, fp); */
-  /* fread(&bcHeader.bcBitCount, 2, 1, fp); */
+  /* coreHeader(&bcHeader, fp); */
   /* dispCoreHeader(&bcHeader); */
 
-  fread(&biHeader.biSize, 4, 1, fp);
-  fread(&biHeader.biWidth, 4, 1, fp);
-  fread(&biHeader.biHeight, 4, 1, fp);
-  fread(&biHeader.biPlanes, 2, 1, fp);
-  fread(&biHeader.biBitCount, 2, 1, fp);
-  fread(&biHeader.biCompression, 4, 1, fp);
-  fread(&biHeader.biSizeImage, 4, 1, fp);
-  fread(&biHeader.biXPixPerMeter, 4, 1, fp);
-  fread(&biHeader.biYPixPerMeter, 4, 1, fp);
-  fread(&biHeader.biClrUsed, 4, 1, fp);
-  fread(&biHeader.biClrImporant, 4, 1, fp);
+  infoHeader(&biHeader, fp);
   dispInfoHeader(&biHeader);
+
+  /* fseek(fp, bfHeader.bfOffBits, SEEK_SET); */
+  /* fread(&rgbTriple, 4, 1, fp); */
+  /* printf("%d %d %d\n", rgbTriple.rgbRed, rgbTriple.rgbBlue, rgbTriple.rgbGreen); */
 
   fclose(fp);
 
