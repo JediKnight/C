@@ -2,12 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define BFTYPE 2
-#define BFSIZE 4
-#define BFRESERVED1 2
-#define BFRESERVED2 2
-#define BFOFFBITS 4
-
 typedef struct tagBITMAPFILEHEADER {
   unsigned short bfType;
   unsigned long  bfSize;
@@ -26,8 +20,8 @@ typedef struct tagBITMAPCOREHEADER{
 
 typedef struct tagBITMAPINFOHEADER{
   unsigned long  biSize;
-  long           biWidth;
-  long           biHeight;
+  unsigned short biWidth;
+  unsigned short biHeight;
   unsigned short biPlanes;
   unsigned short biBitCount;
   unsigned long  biCompression;
@@ -42,11 +36,11 @@ int dispFileHeader(BITMAPFILEHEADER *bfHeader)
 {
   fprintf(stdout,
 	  "[BITMAPFILEHEADER]\n"
-	  "bfType      : %d\n"
-	  "bfSize      : %ld\n"
-	  "bfReserved1 : %d\n"
-	  "bfReserved2 : %d\n"
-	  "bfOffBits   : %ld\n"
+	  "bfType          : %d\n"
+	  "bfSize          : %ld\n"
+	  "bfReserved1     : %d\n"
+	  "bfReserved2     : %d\n"
+	  "bfOffBits       : %ld\n"
 	  "\n",
 	  bfHeader->bfType,
 	  bfHeader->bfSize,
@@ -58,6 +52,19 @@ int dispFileHeader(BITMAPFILEHEADER *bfHeader)
 
 int dispCoreHeader(BITMAPCOREHEADER *bcHeader)
 {
+  fprintf(stdout,
+	  "[BITMAPCOREHEADER]\n"
+	  "bcSize          : %ld\n"
+	  "bcWidth         : %d\n"
+	  "bcHeight        : %d\n"
+	  "bcPlanes        : %d\n"
+	  "bcBitCount      : %d\n"
+	  "\n",
+	  bcHeader->bcSize,
+	  bcHeader->bcWidth,
+	  bcHeader->bcHeight,
+	  bcHeader->bcPlanes,
+	  bcHeader->bcBitCount);
   return 0;
 }
 
@@ -65,17 +72,17 @@ int dispInfoHeader(BITMAPINFOHEADER *biHeader)
 {
   fprintf(stdout,
 	  "[BITMAPINFOHEADER]\n"
-	  "biSize         : %ld\n"
-	  "biWidth        : %ld\n"
-	  "biHeight       : %ld\n"
-	  "biPlanes       : %d\n"
-	  "biBitCount     : %d\n"
-	  "biCompression  : %ld\n"
-	  "biSizeImage    : %ld\n"
-	  "biXPixPerMeter : %ld\n"
-	  "biYPixPerMeter : %ld\n"
-	  "biClrUsed      : %ld\n"
-	  "biClrImporant  : %ld\n"
+	  "biSize          : %ld\n"
+	  "biWidth         : %ld\n"
+	  "biHeight        : %ld\n"
+	  "biPlanes        : %d\n"
+	  "biBitCount      : %d\n"
+	  "biCompression   : %ld\n"
+	  "biSizeImage     : %ld\n"
+	  "biXPixPerMeter  : %ld\n"
+	  "biYPixPerMeter  : %ld\n"
+	  "biClrUsed       : %ld\n"
+	  "biClrImporant   : %ld\n"
 	  "\n",
 	  biHeader->biSize,
 	  biHeader->biWidth,
@@ -97,6 +104,7 @@ int main(int argc, char **argv)
   long var;
   int i;
   BITMAPFILEHEADER bfHeader;
+  BITMAPCOREHEADER bcHeader;
   BITMAPINFOHEADER biHeader;
 
   if(argc != 2)
@@ -111,12 +119,19 @@ int main(int argc, char **argv)
       exit(EXIT_FAILURE);
     }
 
-  fread(&bfHeader.bfType, BFTYPE, 1, fp);
-  fread(&bfHeader.bfSize, BFSIZE, 1, fp);
-  fread(&bfHeader.bfReserved1, BFRESERVED1, 1, fp);
-  fread(&bfHeader.bfReserved2, BFRESERVED2, 1, fp);
-  fread(&bfHeader.bfOffBits, BFOFFBITS, 1, fp);
+  fread(&bfHeader.bfType, 2, 1, fp);
+  fread(&bfHeader.bfSize, 4, 1, fp);
+  fread(&bfHeader.bfReserved1, 2, 1, fp);
+  fread(&bfHeader.bfReserved2, 2, 1, fp);
+  fread(&bfHeader.bfOffBits, 4, 1, fp);
   dispFileHeader(&bfHeader);
+
+  /* fread(&bcHeader.bcSize, 4, 1, fp); */
+  /* fread(&bcHeader.bcWidth, 4, 1, fp); */
+  /* fread(&bcHeader.bcHeight, 4, 1, fp); */
+  /* fread(&bcHeader.bcPlanes, 2, 1, fp); */
+  /* fread(&bcHeader.bcBitCount, 2, 1, fp); */
+  /* dispCoreHeader(&bcHeader); */
 
   fread(&biHeader.biSize, 4, 1, fp);
   fread(&biHeader.biWidth, 4, 1, fp);
