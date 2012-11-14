@@ -12,6 +12,8 @@ int main(int argc, char **argv)
   BITMAPINFOHEADER biHeader;
   RGBTRIPLE rgbTriple;
 
+  fpos_t pos;
+  
   if(argc != 2)
     {
       fprintf(stdout, "owata\n");
@@ -24,15 +26,20 @@ int main(int argc, char **argv)
       exit(EXIT_FAILURE);
     }
 
+  /* fgetpos(fp, &pos); */
+  /* printf("%d\n", (int)pos); */
   if(fileHeader(&bfHeader, fp) == -1)
-    return -1;
+    {
+      return -1;
+    }
 
-  dispFileHeader(&bfHeader);
-
+  /* fgetpos(fp, &pos); */
+  /* printf("%d\n", (int)pos); */
+  fseek(fp, 14, SEEK_SET);
   if(infoHeader(&biHeader, fp) == -1)
-    return -1;
-
-  dispInfoHeader(&biHeader);
+    {
+      return -1;
+    }
 
   fclose(fp);
 
