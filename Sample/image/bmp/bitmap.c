@@ -1,9 +1,17 @@
 #include <stdio.h>
 #include "bitmap.h"
 
-#define ErrorHandling(m)				\
-  fprintf(stderr, "%s\n", m);				\
-  return -1
+#define ErrorHandling(x)				\
+  {							\
+    fprintf(stderr, "%s\n", x);				\
+    return -1;						\
+  }
+
+#define SetTheData(t1, v1, t2, v2)		\
+  {						\
+    t1 = v1;					\
+    t2 += v2;					\
+  }
 
 int fileHeader(BITMAPFILEHEADER *bfHeader, FILE *fp)
 {
@@ -12,39 +20,33 @@ int fileHeader(BITMAPFILEHEADER *bfHeader, FILE *fp)
   short var_short;
 
   if(fread(&var_short, 2, 1, fp) != 1)
-    {ErrorHandling("fread bfType");}
+    ErrorHandling("fread bfType");
 
-  bfHeader->bfType = var_short;
-  count +=  2;
+  SetTheData(bfHeader->bfType, var_short, count, 2);
 
   if(bfHeader->bfType != 0x4d42)
-    {ErrorHandling("not a bitmap file");}
+      ErrorHandling("not a bitmap file");
 
   if(fread(&var_long, 4, 1, fp) != 1)
-    {ErrorHandling("fread bfSize");}
+      ErrorHandling("fread bfSize");
 
-  bfHeader->bfSize = var_long;
-  count += 4;
-
-  if(fread(&var_short, 2, 1, fp) != 1)
-    {ErrorHandling("fread bfReserved1");}
-
-  bfHeader->bfReserved1 = var_short;
-  count += 2;
+  SetTheData(bfHeader->bfSize, var_long, count, 4);
 
   if(fread(&var_short, 2, 1, fp) != 1)
-    {ErrorHandling("fread bfReserved2");}
+      ErrorHandling("fread bfReserved1");
 
-  bfHeader->bfReserved2 = var_short;
-  count += 2;
+  SetTheData(bfHeader->bfReserved1, var_short, count, 2);
+
+  if(fread(&var_short, 2, 1, fp) != 1)
+      ErrorHandling("fread bfReserved2");
+
+  SetTheData(bfHeader->bfReserved2, var_short, count, 2);
 
   if(fread(&var_long, 4, 1, fp) != 1)
-    {ErrorHandling("fread bfOffBits");}
+      ErrorHandling("fread bfOffBits");
 
-  bfHeader->bfOffBits = var_long;
-  count += 4;
+  SetTheData(bfHeader->bfOffBits, var_long, count, 4);
 
-  fprintf(stdout, "bitmap\n");
   return count;
 }
 
@@ -63,71 +65,62 @@ int infoHeader(BITMAPINFOHEADER *biHeader, FILE *fp)
   int count = 0;
   long var_long;
   short var_short;
-  if(fread(&var_long, 4, 1, fp) != 1)
-    {ErrorHandling("fread biSize");}
-
-  biHeader->biSize = var_long;
-  count += 4;
 
   if(fread(&var_long, 4, 1, fp) != 1)
-    {ErrorHandling("fread biWidth");}
+    ErrorHandling("fread biSize");
 
-  biHeader->biWidth = var_long;
-  count += 4;
+  SetTheData(biHeader->biSize, var_long, count, 4);
 
   if(fread(&var_long, 4, 1, fp) != 1)
-    {ErrorHandling("fread biHeight");}
+    ErrorHandling("fread biWidth");
 
-  biHeader->biHeight = var_long;
-  count += 4;
+  SetTheData(biHeader->biWidth, var_long, count, 4);
+
+  if(fread(&var_long, 4, 1, fp) != 1)
+    ErrorHandling("fread biHeight");
+
+  SetTheData(biHeader->biHeight, var_long, count, 4);
 
   if(fread(&var_short, 2, 1, fp) != 1)
-    {ErrorHandling("fread biPlanes");}
+    ErrorHandling("fread biPlanes");
 
-  biHeader->biPlanes = var_short;
-  count += 2;
+  SetTheData(biHeader->biPlanes, var_short, count, 2);
 
   if(fread(&var_short, 2, 1, fp) != 1)
-    {ErrorHandling("fread biBitCount");}
+    ErrorHandling("fread biBitCount");
 
-  biHeader->biBitCount = var_short;
-  count += 2;
+  SetTheData(biHeader->biBitCount, var_short, count, 2);
 
   if(fread(&var_long, 4, 1, fp) != 1)
-    {ErrorHandling("fread bitCompression");}
+    ErrorHandling("fread bitCompression");
 
-  biHeader->biCompression = var_long;
+  SetTheData(biHeader->biCompression, var_long, count, 4);
+
+  if(fread(&var_long, 4, 1, fp) != 1)
+    ErrorHandling("fread biSizeImage");
+
+  SetTheData(biHeader->biSizeImage, var_long, count, 4);
   count += 4;
 
   if(fread(&var_long, 4, 1, fp) != 1)
-    {ErrorHandling("fread biSizeImage");}
+    ErrorHandling("fread biXPixPerMeter");
 
-  biHeader->biSizeImage = var_long;
-  count += 4;
-
-  if(fread(&var_long, 4, 1, fp) != 1)
-    {ErrorHandling("fread biXPixPerMeter");}
-
-  biHeader->biXPixPerMeter = var_long;
-  count += 4;
+  SetTheData(biHeader->biXPixPerMeter, var_long, count, 4);
 
   if(fread(&var_long, 4, 1, fp) != 1)
-    {ErrorHandling("fread biYPixPerMeter");}
+    ErrorHandling("fread biYPixPerMeter");
 
-  biHeader->biYPixPerMeter = var_long;
-  count += 4;
-
-  if(fread(&var_long, 4, 1, fp) != 1)
-    {ErrorHandling("fread biClrUsed");}
-
-  biHeader->biClrUsed = var_long;
-  count += 4;
+  SetTheData(biHeader->biYPixPerMeter, var_long, count, 4);
 
   if(fread(&var_long, 4, 1, fp) != 1)
-    {ErrorHandling("fread biClrImporant");}
+    ErrorHandling("fread biClrUsed");
 
-  biHeader->biClrImporant = var_long;
-  count += 4;
+  SetTheData(biHeader->biClrUsed, var_long, count, 4);
+
+  if(fread(&var_long, 4, 1, fp) != 1)
+    ErrorHandling("fread biClrImporant");
+
+  SetTheData(biHeader->biClrImporant, var_long, count, 4);
 
   return count;
 }
@@ -136,16 +129,16 @@ int dispFileHeader(BITMAPFILEHEADER *bfHeader)
 {
   fprintf(stdout,
 	  "[BITMAPFILEHEADER]\n"
-	  //"bfType          : %d\n"
+	  "bfType          : %d\n"
 	  "bfSize          : %ld [byte]\n"
-	  //"bfReserved1     : %d\n"
-	  //"bfReserved2     : %d\n"
+	  "bfReserved1     : %d\n"
+	  "bfReserved2     : %d\n"
 	  "bfOffBits       : %ld [byte]\n"
 	  "\n",
-	  //bfHeader->bfType,
+	  bfHeader->bfType,
 	  bfHeader->bfSize,
-	  //bfHeader->bfReserved1,
-	  //bfHeader->bfReserved2,
+	  bfHeader->bfReserved1,
+	  bfHeader->bfReserved2,
 	  bfHeader->bfOffBits);
   return 0;
 }

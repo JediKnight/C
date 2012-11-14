@@ -29,7 +29,9 @@ int main(int argc, char **argv)
 
   dispFileHeader(&bfHeader);
 
-  infoHeader(&biHeader, fp);
+  if(infoHeader(&biHeader, fp) == -1)
+    return -1;
+
   dispInfoHeader(&biHeader);
 
   fclose(fp);
