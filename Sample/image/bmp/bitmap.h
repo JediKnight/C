@@ -46,4 +46,8 @@ enum {
   BI_PNG
 };
 
+int fileHeader(BITMAPFILEHEADER *, FILE *);
+int coreHeader(BITMAPCOREHEADER *, FILE *);
+int infoHeader(BITMAPINFOHEADER *, FILE *);
+
 #endif	/* _BITMAP_H */
