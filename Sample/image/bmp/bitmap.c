@@ -1,15 +1,21 @@
 #include <stdio.h>
 #include "bitmap.h"
 
-#define ErrorHandling(x)				\
-  {							\
-    fprintf(stderr, "%s\n", x);				\
-    return -1;						\
+#define ErrorHandling(mesg) { fprintf(stderr, "%s\n", mesg); return -1; }
+#define SetTheData(targ1, val1, targ2, val2) { targ1 = val1; targ2 += val2; }
+#define DispValLong(type, val, format) { fprintf(stdout, "%-15s : %ld %s\n", type, val, format); }
+#define DispValShort(type, val, format) { fprintf(stdout, "%-15s : %d %s\n", type, val, format); }
+#define ReadVarLong(header, fp, cnt)					\
+  {									\
+    long var_long;							\
+    if(fread(&var_long, 4, 1, fp) != 1)					\
+      {									\
+	ErrorHandling("fread bfSize");					\
+      }									\
+    SetTheData(header, var_long, cnt, 4);				\
+    DispValLong("bfSize", header, "[byte]");				\
   }
-
-#define SetTheData(t1, v1, t2, v2) t1 = v1; t2 += v2
-#define DispValLong(t, v, f) fprintf(stdout, "%-15s : %ld %s\n", t, v, f)
-#define DispValShort(t, v, f) fprintf(stdout, "%-15s : %d %s\n", t, v, f)
+#define ReadVarShort(h, f)
 
 int fileHeader(BITMAPFILEHEADER *bfHeader, FILE *fp)
 {
@@ -26,25 +32,26 @@ int fileHeader(BITMAPFILEHEADER *bfHeader, FILE *fp)
       ErrorHandling("not a bitmap file");
 
   SetTheData(bfHeader->bfType, var_short, count, 2);
-  //  DispValShort("bfType", bfHeader->bfType, "");
+  DispValShort("bfType", bfHeader->bfType, "");
 
-  if(fread(&var_long, 4, 1, fp) != 1)
-      ErrorHandling("fread bfSize");
+  /* if(fread(&var_long, 4, 1, fp) != 1) */
+  /*     ErrorHandling("fread bfSize"); */
 
-  SetTheData(bfHeader->bfSize, var_long, count, 4);
-  DispValLong("bfSize", bfHeader->bfSize, "[byte]");
+  /* SetTheData(bfHeader->bfSize, var_long, count, 4); */
+  /* DispValLong("bfSize", bfHeader->bfSize, "[byte]"); */
+  ReadVarLong(bfHeader->bfSize, fp, count);
 
   if(fread(&var_short, 2, 1, fp) != 1)
       ErrorHandling("fread bfReserved1");
 
   SetTheData(bfHeader->bfReserved1, var_short, count, 2);
-  //  DispValShort("bfReserved1", bfHeader->bfReserved1, "");
+  DispValShort("bfReserved1", bfHeader->bfReserved1, "");
 
   if(fread(&var_short, 2, 1, fp) != 1)
       ErrorHandling("fread bfReserved2");
 
   SetTheData(bfHeader->bfReserved2, var_short, count, 2);
-  //  DispValShort("bfReserved2", bfHeader->bfReserved2, "");
+  DispValShort("bfReserved2", bfHeader->bfReserved2, "");
 
   if(fread(&var_long, 4, 1, fp) != 1)
       ErrorHandling("fread bfOffBits");

@@ -1,6 +1,6 @@
 #include <sqlite3.h>
 #include <stdio.h>
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <stdarg.h>
 
 sqlite3 *openSqlite(char *dbname)
@@ -14,7 +14,7 @@ sqlite3 *openSqlite(char *dbname)
   return db;
 }
 
-int callback(void *arg, int resultnm, char **result, char **column)
+int cback(void *arg, int resultnm, char **result, char **column)
 {
   int i;
 
@@ -31,13 +31,12 @@ int callback(void *arg, int resultnm, char **result, char **column)
   return 0;
 }
 
-char *sqlgen(const cahr *format, ...)
-{
-  const
-  sql = sqlite3_mprintf("select c.displayname, m.from_dispname, m.body_xml from Messages as m inner join Conversations as c on m.convo_id = c.id where author not like '%s' and body_xml like '%%%s%%' and timestamp > %d order by timestamp", pconf->skype.user, key, (int)past);
-}
+/* char *sqlgen(const cahr *format, ...) */
+/* { */
+/*   //  const char * sql = sqlite3_mprintf("select c.displayname, m.from_dispname, m.body_xml from Messages as m inner join Conversations as c on m.convo_id = c.id where author not like '%s' and body_xml like '%%%s%%' and timestamp > %d order by timestamp", pconf->skype.user, key, (int)past); */
+/* } */
 
-int runSql(sqlite3 *db, char *sql)
+int runSql(sqlite3 *db, char *sql, int (*callback)(void *, int, char **, char **))
 {
   char *errmesg;
   if(sqlite3_exec(db, "BEGIN", NULL, NULL, &errmesg) != SQLITE_OK)
@@ -63,19 +62,26 @@ int runSql(sqlite3 *db, char *sql)
   return 0;
 }
 
+#define checkArgs(c, v, n)			\
+  if(c != n)					\
+    {						\
+      fprintf(stderr, "%s [database]\n", *v);	\
+      return -1;				\
+    }
+
 int main(int argc, char **argv)
 {
   sqlite3 *db;
   char *sql;
 
-  if((db = openSqlite("/Users/tomoaki/Library/Application\ Support/Skype/tanaka8528/main.db")) == NULL)
+  checkArgs(argc, argv, 2);
+  if((db = openSqlite(argv[1])) == NULL)
     {
-      fprintf(stdout, "openSqlite");
-      exit(EXIT_FAILURE);
+      fprintf(stderr, "openSqlite");
+      return -1;
     }
 
-  sqlgen()
-  runSql(db, "select * from testcode");
+  runSql(db, "select * from testcode", cback);
   
   sqlite3_close(db);
   
